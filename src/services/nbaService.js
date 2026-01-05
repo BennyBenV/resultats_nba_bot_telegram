@@ -1,7 +1,10 @@
 const axios = require('axios');
 require('dotenv').config();
 
-const API_KEY = process.env.BALLDONTLIE_API_KEY;
+const rawKey = process.env.BALLDONTLIE_API_KEY || '';
+// Aggressive sanitize: remove anything that is not a letter, number, or dash
+const API_KEY = rawKey.replace(/[^a-zA-Z0-9-]/g, '');
+
 const BASE_URL = 'https://api.balldontlie.io/v1/games';
 const STATS_URL = 'https://api.balldontlie.io/v1/stats';
 
