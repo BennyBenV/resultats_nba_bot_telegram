@@ -7,6 +7,19 @@ async function main() {
     try {
         console.log('--- NBA Morning Digest Bot Started ---');
 
+        // 0. Vérification des variables d'environnement
+        const requiredVars = ['TELEGRAM_BOT_TOKEN', 'TELEGRAM_CHAT_ID', 'BALLDONTLIE_API_KEY'];
+        const missingVars = requiredVars.filter(key => !process.env[key]);
+
+        if (missingVars.length > 0) {
+            throw new Error(`Variables d'environnement manquantes : ${missingVars.join(', ')}. Vérifiez vos Secrets GitHub.`);
+        }
+
+        // Debug Logs (Masqués)
+        console.log('Environment setup:');
+        console.log(`- TARGET_CHAT_ID: ${process.env.TELEGRAM_CHAT_ID ? 'Set ✅' : 'Missing ❌'}`);
+        console.log(`- API_KEY: ${process.env.BALLDONTLIE_API_KEY ? 'Set (Length: ' + process.env.BALLDONTLIE_API_KEY.length + ') ✅' : 'Missing ❌'}`);
+
         const gameDate = getYesterdayDate();
         const displayDate = formatDisplayDate(gameDate);
         console.log(`Date cible : ${gameDate}`);
