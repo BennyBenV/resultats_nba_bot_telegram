@@ -15,11 +15,6 @@ async function main() {
             throw new Error(`Variables d'environnement manquantes : ${missingVars.join(', ')}. Vérifiez vos Secrets GitHub.`);
         }
 
-        // Debug Logs (Masqués)
-        console.log('Environment setup:');
-        console.log(`- TARGET_CHAT_ID: ${process.env.TELEGRAM_CHAT_ID ? 'Set ✅' : 'Missing ❌'}`);
-        console.log(`- API_KEY: ${process.env.BALLDONTLIE_API_KEY ? 'Set (Length: ' + process.env.BALLDONTLIE_API_KEY.length + ') ✅' : 'Missing ❌'}`);
-
         const gameDate = getYesterdayDate();
         const displayDate = formatDisplayDate(gameDate);
         console.log(`Date cible : ${gameDate}`);
