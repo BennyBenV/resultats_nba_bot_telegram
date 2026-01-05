@@ -31,8 +31,8 @@ async function main() {
             games.forEach(game => {
                 const hScore = game.home_team_score;
                 const vScore = game.visitor_team_score;
-                const hTeam = game.home_team.abbreviation;
-                const vTeam = game.visitor_team.abbreviation;
+                const hTeam = game.home_team.full_name;
+                const vTeam = game.visitor_team.full_name;
                 const homeWon = hScore > vScore;
 
                 let line = homeWon
