@@ -13,7 +13,7 @@ const STATS_URL = 'https://api.balldontlie.io/v1/stats';
 async function getGames(date) {
     try {
         const response = await axios.get(BASE_URL, {
-            headers: { 'Authorization': `${API_KEY}` },
+            headers: { 'Authorization': `${API_KEY.trim()}` },
             params: { 'dates[]': date, per_page: 100 }
         });
         return response.data.data;
