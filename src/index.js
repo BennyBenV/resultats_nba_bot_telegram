@@ -35,12 +35,12 @@ async function main() {
                 const vTeam = game.visitor_team.full_name;
                 const homeWon = hScore > vScore;
 
-                // American Format: Visitor @ Home
+                // Format: HOME Score - Score VISITOR
                 // Mark winner in bold
-                const vString = homeWon ? `${vTeam} (${vScore})` : `*${vTeam} (${vScore})*`;
-                const hString = homeWon ? `*${hTeam} (${hScore})*` : `${hTeam} (${hScore})`;
+                const hString = homeWon ? `*${hTeam}* ${hScore}` : `${hTeam} ${hScore}`;
+                const vString = homeWon ? `${vScore} ${vTeam}` : `${vScore} *${vTeam}*`;
 
-                let line = `▪️ ${vString} @ ${hString}`;
+                let line = `▪️ ${hString} - ${vString}`;
 
                 if (Math.abs(hScore - vScore) <= 5) line += " 🔥";
                 if (game.period > 4) line += " (OT)";
