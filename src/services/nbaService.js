@@ -69,7 +69,26 @@ async function getStats(gameIds) {
     }
 }
 
+/**
+ * Récupère le classement (Standings) pour une saison donnée
+ * @param {number} season - Année de la saison (ex: 2024 pour 2024-2025)
+ * @returns {Promise<Array>} Liste des équipes classées
+ */
+async function getStandings(season) {
+    try {
+        const response = await axios.get('https://api.balldontlie.io/v1/standings', {
+            headers: { 'Authorization': `${API_KEY}` },
+            params: { season: season }
+        });
+        return response.data.data;
+    } catch (error) {
+        console.error('Erreur getStandings:', error.message);
+        return [];
+    }
+}
+
 module.exports = {
     getGames,
-    getStats
+    getStats,
+    getStandings
 };
