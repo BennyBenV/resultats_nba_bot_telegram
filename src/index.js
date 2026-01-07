@@ -27,6 +27,7 @@ async function main() {
             await sendDailyDigest(`🏀 *NBA Morning Digest* - ${displayDate}\n\n🛌 *Aucune affiche NBA cette nuit.*`);
         } else {
             let message = `🏀 *NBA Morning Digest* - ${displayDate}\n\n`;
+            let topPerformers = [];
 
             for (const game of games) {
                 // Compatible with new nbaService structure
@@ -85,7 +86,8 @@ async function main() {
         console.log('Récupération classements...');
         const currentYear = new Date().getFullYear();
         const currentMonth = new Date().getMonth();
-        const season = currentMonth >= 9 ? currentYear : currentYear - 1;
+        // API expects season ending year (e.g. 2026 for 2025-2026)
+        const season = currentMonth >= 9 ? currentYear + 1 : currentYear;
 
         // Note: New API might behave differently for season year.
         const standings = await getStandings(season);

@@ -124,35 +124,61 @@ async function getStandings(season) {
             params: { year: season }
         });
 
-        if (!response.data.response || !response.data.response.standings) return [];
+        if (!response.data.response || !response.data.response.standings) {
+            return [];
+        }
 
         const rawStandings = response.data.response.standings;
 
-        return rawStandings.map(t => {
-            if (!t.team) return null;
-            return {
-                team: {
-                    name: t.team.displayName || t.team.name,
-                    code: t.team.abbreviation
-                },
-                conference: {
-                    name: (t.conferenceName || '').toLowerCase(),
-                    rank: parseInt(t.divisionRank) || 0
-                },
-                win: {
-                    total: parseInt(t.stats.find(s => s.name === 'wins')?.value) || 0,
-                    percentage: t.stats.find(s => s.name === 'winPercent')?.displayValue || '0.000'
-                },
-                loss: {
-                    total: parseInt(t.stats.find(s => s.name === 'losses')?.value) || 0
-                }
-            };
-        }).filter(t => t !== null);
+        // Structure is [ { name: 'East', entries: [ { team: ... }, ... ] }, { name: 'West', ... } ]
+        const allTeams = [];
+
+        rawStandings.forEach(conf => {
+            const confName = conf.name || conf.abbreviation || 'Unknown';
+            // Nested structure: conf -> standings -> entries
+            const entries = conf.standings ? conf.standings.entries : [];
+
+            if (entries && Array.isArray(entries)) {
+                entries.forEach(entry => {
+                    const t = entry;
+                    if (!t.team) {
+                        return;
+                    }
+
+                    allTeams.push({
+                        team: {
+                            name: t.team.displayName || t.team.name,
+                            code: t.team.abbreviation
+                        },
+                        conference: {
+                            name: confName.toLowerCase(),
+                            rank: parseInt(t.playoffSeed) || parseInt(getStat(t, 'rankChange')) || 0
+                        },
+                        win: {
+                            total: parseInt(getStat(t, 'wins')) || 0,
+                            percentage: getStat(t, 'winPercent') || '0.000'
+                        },
+                        loss: {
+                            total: parseInt(getStat(t, 'losses')) || 0
+                        }
+                    });
+                });
+            }
+        });
+
+        return allTeams;
 
     } catch (error) {
         console.error('Erreur getStandings:', error.message);
         return [];
     }
+}
+
+// Helper defined outside or inside scope
+function getStat(entry, statName) {
+    if (!entry.stats) return null;
+    const s = entry.stats.find(st => st.name === statName || st.shortDisplayName === statName);
+    return s ? (s.value || s.displayValue) : null;
 }
 
 module.exports = {
